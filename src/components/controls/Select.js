@@ -7,12 +7,18 @@ import {
 import React from "react";
 
 export default function Select(props) {
-  const { name, label, value, onChange, options } = props;
+  const { name, label, value, variant, onChange, options } = props;
 
   return (
     <FormControl>
       <InputLabel>{label}</InputLabel>
-      <MuiSelect label={label} name={name} value={value} onChange={onChange}>
+      <MuiSelect
+        label={label}
+        name={name}
+        variant={variant || "outlined"}
+        value={value}
+        onChange={onChange}
+      >
         <MenuItem value="">None</MenuItem>
         {options.map((option) => (
           <MenuItem key={option} value={option.id}>
