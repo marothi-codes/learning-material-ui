@@ -5,11 +5,10 @@ import {
   makeStyles,
   ThemeProvider,
 } from "@material-ui/core";
-import SideMenu from "../components/SideMenu";
 
+//import SideMenu from "../components/SideMenu";
 import Header from "../components/Header";
-import PageHeader from "../components/PageHeader";
-import PeopleOutlineTwoToneIcon from "@material-ui/icons/PeopleOutlineTwoTone";
+import Employees from "../pages/Employees/Employees";
 
 // Styesheet.
 import "./App.css";
@@ -43,7 +42,7 @@ const theme = createTheme({
 
 const useStyles = makeStyles({
   appMain: {
-    paddingLeft: "320px",
+    //paddingLeft: "320px",
     width: "100%",
   },
 });
@@ -52,14 +51,10 @@ function App() {
   const classes = useStyles();
   return (
     <ThemeProvider theme={theme}>
-      <SideMenu />
+      {/*<SideMenu />*/}
       <div className={classes.appMain}>
         <Header />
-        <PageHeader
-          title="Page Header"
-          subtitle="Page Description"
-          icon={<PeopleOutlineTwoToneIcon fontSize="large" />}
-        />
+        <Employees />
       </div>
       <CssBaseline />
     </ThemeProvider>
