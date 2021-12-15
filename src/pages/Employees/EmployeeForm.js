@@ -23,45 +23,61 @@ const genderItems = [
 ];
 
 export default function EmployeeForm() {
-  const { errors, handleInputChange, setErrors, values } =
-    useForm(initialFieldValues);
-
-  const validate = () => {
-    let temp = {};
+  const validate = (fieldValues = values) => {
+    let temp = { ...errors };
     const emailSyntax =
       /^[_\w\\-]+(\.[_\w\\-]+)*@[\w\\-]+(\.[\w\\-]+)*(\.[\D]{2,6})$/;
-    temp.fullname = values.fullname
-      ? ""
-      : "Please type in the employee's name.";
 
-    temp.email = values.email
-      ? ""
-      : "Please type in the employee's email address.";
-
-    if (!/.{8}/.test(values["email"])) {
-      temp.email = "The email address must consist of at least 8 characters.";
-    } else if (emailSyntax.test(values["email"]) === false) {
-      temp.email = "The email address is invalid.";
+    if ("fullname" in fieldValues) {
+      temp.fullname = fieldValues.fullname
+        ? ""
+        : "Please type in the employee's name.";
     }
 
-    temp.mobile = /.{10}/.test(values.mobile)
-      ? ""
-      : "The phone number must consist of at least 10 characters.";
-    temp.city = values.city ? "" : "Please type in the city's name.";
-    if ("departmentId" in values)
-      temp.departmentId =
-        values.departmentId.length !== 0
-          ? ""
-          : "Please select the empoyee's respective department.";
+    if ("email" in fieldValues) {
+      temp.email = fieldValues.email
+        ? ""
+        : "Please type in the employee's email address.";
+
+      if (!/.{8}/.test(fieldValues["email"])) {
+        temp.email = "The email address must consist of at least 8 characters.";
+      } else if (emailSyntax.test(fieldValues["email"]) === false) {
+        temp.email = "The email address is invalid.";
+      }
+    }
+
+    if ("mobile" in fieldValues) {
+      temp.mobile = /.{10}/.test(fieldValues.mobile)
+        ? ""
+        : "The phone number must consist of at least 10 characters.";
+    }
+
+    if ("city" in fieldValues) {
+      temp.city = fieldValues.city ? "" : "Please type in the city's name.";
+    }
+
+    if ("departmentId" in fieldValues) {
+      if ("departmentId" in fieldValues)
+        temp.departmentId =
+          fieldValues.departmentId.length !== 0
+            ? ""
+            : "Please select the empoyee's respective department.";
+    }
 
     setErrors({ ...temp });
-    return Object.values(temp).every((x) => x === "");
+
+    if (fieldValues === values)
+      return Object.values(temp).every((x) => x === "");
   };
+
+  const { errors, handleInputChange, handleFormReset, setErrors, values } =
+    useForm(initialFieldValues, true, validate);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      window.alert("Testing.");
+      employeeService.insertEmployee(values);
+      handleFormReset();
     }
   };
 
@@ -83,6 +99,7 @@ export default function EmployeeForm() {
             value={values["email"]}
             error={errors["email"]}
             onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputChange(e)}
           />
           <Controls.Input
             label="Mobile"
@@ -91,6 +108,7 @@ export default function EmployeeForm() {
             value={values["mobile"]}
             error={errors["mobile"]}
             onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputChange(e)}
           />
           <Controls.Input
             label="City"
@@ -98,6 +116,7 @@ export default function EmployeeForm() {
             value={values["city"]}
             error={errors["city"]}
             onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputChange(e)}
           />
         </Grid>
         <Grid item sm={6}>
@@ -114,6 +133,7 @@ export default function EmployeeForm() {
             value={values["departmentId"]}
             error={errors["departmentId"]}
             onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputChange(e)}
             options={employeeService.getDepartmentsCollection()}
           />
           <Controls.DatePicker
@@ -141,7 +161,7 @@ export default function EmployeeForm() {
               color="secondary"
               size="large"
               text="Start Over"
-              type="reset"
+              onClick={handleFormReset}
             />
           </div>
         </Grid>
