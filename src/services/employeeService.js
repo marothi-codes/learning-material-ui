@@ -15,24 +15,29 @@ export const getDepartmentsCollection = () => [
   { id: "9", title: "Videography" },
 ];
 
-export function generateEmployeeId() {
-  if (localStorage.getItem(KEYS["employees"]) === null)
-    localStorage.setItem(KEYS["employees"], "0");
-
-  let id = parseInt(localStorage.getItem(KEYS["employeeId"]));
-  localStorage.setItem(KEYS["employeeId"], (++id).toString());
-  return id;
-}
-
 export function insertEmployee(data) {
   let employees = getEmployees();
   data["id"] = generateEmployeeId();
   employees.push(data);
-  localStorage.setItem(KEYS["employees"], JSON.stringify(employees));
+  localStorage.setItem(KEYS.employees, JSON.stringify(employees));
+}
+
+export function generateEmployeeId() {
+  if (localStorage.getItem(KEYS.employeeId) == null)
+    localStorage.setItem(KEYS.employeeId, "0");
+  var id = parseInt(localStorage.getItem(KEYS.employeeId));
+  localStorage.setItem(KEYS.employeeId, (++id).toString());
+  return id;
 }
 
 export function getEmployees() {
-  if (localStorage.getItem(KEYS["employees"]) === null)
-    localStorage.setItem(KEYS["employees"], JSON.stringify([]));
-  return JSON.parse(localStorage.getItem(KEYS["employees"]));
+  if (localStorage.getItem(KEYS.employees) == null)
+    localStorage.setItem(KEYS.employees, JSON.stringify([]));
+  let employees = JSON.parse(localStorage.getItem(KEYS.employees));
+  //map departmentID to department title
+  let departments = getDepartmentsCollection();
+  return employees.map((x) => ({
+    ...x,
+    department: departments[x.departmentId - 1].title,
+  }));
 }
