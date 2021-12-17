@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     "& tbody td": {
       fontWeight: "300",
     },
-    "& tr:hover": {
+    "& tbody tr:hover": {
       backgroundColor: "#fffbf2",
       cursor: "pointer",
     },
@@ -35,7 +35,9 @@ export default function useTable(records, headerCells, filterFn) {
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
 
-  const TblContainer = (props) => <Table>{props.children}</Table>;
+  const TblContainer = (props) => (
+    <Table className={classes.table}>{props.children}</Table>
+  );
 
   const TblHead = (props) => {
     const handleSortRequest = (cellId) => {

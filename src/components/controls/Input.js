@@ -9,6 +9,7 @@ export default function Input({
   variant,
   error = null,
   onChange,
+  ...others
 }) {
   return (
     <TextField
@@ -17,8 +18,9 @@ export default function Input({
       type={type || "text"}
       variant={variant || "outlined"}
       value={value}
-      {...(error && { error: true, helperText: error })}
+      {...others}
       onChange={onChange}
+      {...(error && { error: true, helperText: error })}
     />
   );
 }
