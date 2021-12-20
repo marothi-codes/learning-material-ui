@@ -17,16 +17,30 @@ export const getDepartmentsCollection = () => [
 
 export function insertEmployee(data) {
   let employees = getEmployees();
-  data["id"] = generateEmployeeId();
+  data.id = generateEmployeeId();
   employees.push(data);
   localStorage.setItem(KEYS.employees, JSON.stringify(employees));
 }
 
+export function updateEmployee(data) {
+  let employees = getEmployees();
+  let recordIndex = employees.findIndex((x) => x.id === data.id);
+  employees[recordIndex] = { ...data };
+  localStorage.setItem(KEYS.employees, JSON.stringify(employees));
+}
+
+export function deleteEmployee(id) {
+  let employees = getEmployees();
+  employees = employees.filter((x) => x.id !== id);
+  localStorage.setItem(KEYS.employees, JSON.stringify(employees));
+}
+
 export function generateEmployeeId() {
-  if (localStorage.getItem(KEYS.employeeId) == null)
+  if (localStorage.getItem(KEYS.employeeId) === null)
     localStorage.setItem(KEYS.employeeId, "0");
-  var id = parseInt(localStorage.getItem(KEYS.employeeId));
-  localStorage.setItem(KEYS.employeeId, (++id).toString());
+  const employees = getEmployees();
+  var id = employees.length.toString();
+  localStorage.setItem(KEYS.employeeId, id);
   return id;
 }
 

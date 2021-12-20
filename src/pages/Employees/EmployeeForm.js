@@ -1,5 +1,5 @@
 import { Grid } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controls } from "../../components/controls/controls";
 import Form, { useForm } from "../../components/useForm";
 import * as employeeService from "../../services/employeeService";
@@ -22,7 +22,7 @@ const genderItems = [
   { id: "other", title: "Other" },
 ];
 
-export default function EmployeeForm() {
+export default function EmployeeForm({ addOrEdit, recordForEdit }) {
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     const emailSyntax =
@@ -70,16 +70,28 @@ export default function EmployeeForm() {
       return Object.values(temp).every((x) => x === "");
   };
 
-  const { errors, handleInputChange, handleFormReset, setErrors, values } =
-    useForm(initialFieldValues, true, validate);
+  const {
+    errors,
+    handleInputChange,
+    handleFormReset,
+    setErrors,
+    values,
+    setValues,
+  } = useForm(initialFieldValues, true, validate);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      employeeService.insertEmployee(values);
-      handleFormReset();
+      addOrEdit(values, handleFormReset);
     }
   };
+
+  useEffect(() => {
+    if (recordForEdit !== null)
+      setValues({
+        ...recordForEdit,
+      });
+  }, [recordForEdit, setValues]);
 
   return (
     <Form onSubmit={(e) => handleSubmit(e)}>
@@ -91,6 +103,7 @@ export default function EmployeeForm() {
             value={values["fullname"]}
             error={errors["fullname"]}
             onChange={(e) => handleInputChange(e)}
+            onBlur={(e) => handleInputChange(e)}
           />
           <Controls.Input
             label="Email"
